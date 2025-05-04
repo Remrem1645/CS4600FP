@@ -1,12 +1,9 @@
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.nio.file.Files;
+import java.io.*;
+import java.nio.file.*;
 import java.security.*;
-import java.security.spec.X509EncodedKeySpec;
+import java.security.spec.*;
 import javax.crypto.*;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import javax.crypto.spec.*;
 
 public class Sender {
     public static void main(String[] args) throws Exception {

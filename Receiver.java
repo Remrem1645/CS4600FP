@@ -1,11 +1,7 @@
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.nio.file.Files;
-
+import java.io.*;
+import java.nio.file.*;
 import java.security.*;
-import java.security.spec.PKCS8EncodedKeySpec;
-
+import java.security.spec.*;
 import javax.crypto.*;
 import javax.crypto.spec.*;
 
