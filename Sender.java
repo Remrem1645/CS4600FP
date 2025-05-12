@@ -42,11 +42,11 @@ public class Sender {
     // Loads a public key from a file path (https://www.baeldung.com/java-rsa#storingKeysInFiles)
     public static PublicKey loadPublicKey(String filename) throws Exception {
         // Read the key bytes from the file and create a public key spec
-        byte[] bytes = Files.readAllBytes(new File(filename).toPath());
-        X509EncodedKeySpec spec = new X509EncodedKeySpec(bytes);
+        byte[] encodedKey = Files.readAllBytes(new File(filename).toPath());
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(encodedKey);
 
         // Generate the public key from the spec and return it
-        return KeyFactory.getInstance("RSA").generatePublic(spec);
+        return KeyFactory.getInstance("RSA").generatePublic(keySpec);
     }
 
 
@@ -101,7 +101,7 @@ public class Sender {
         return mac.doFinal();
     }
 
-    // Class to hold the encrypted message and IV
+    // Class to hold the encrypted message and IV for returning data from encryptMessage method
     static class EncryptedData {
         byte[] message;
         byte[] iv;

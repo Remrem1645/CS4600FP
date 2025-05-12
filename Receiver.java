@@ -12,16 +12,24 @@ public class Receiver {
         PrivateKey receiverPrivateKey = loadPrivateKey("keys/party2_private.key");
 
         try (DataInputStream in = new DataInputStream(new FileInputStream("Transmitted_Data.dat"))) {
-            int ivLen = in.readInt(); byte[] iv = in.readNBytes(ivLen);
-            int aesKeyLen = in.readInt(); byte[] encryptedAesKey = in.readNBytes(aesKeyLen);
-            int messageLen = in.readInt(); byte[] encryptedMessage = in.readNBytes(messageLen);
-            int macLen = in.readInt(); byte[] receivedMac = in.readNBytes(macLen);
+            // Read the file data and store into variables
+            int ivLen = in.readInt(); 
+            byte[] iv = in.readNBytes(ivLen);
+
+            int aesKeyLen = in.readInt(); 
+            byte[] encryptedAESKey = in.readNBytes(aesKeyLen);
+
+            int messageLen = in.readInt(); 
+            byte[] encryptedMessage = in.readNBytes(messageLen);
+
+            int macLen = in.readInt(); 
+            byte[] receivedMac = in.readNBytes(macLen);
 
             // Verify the MAC
-            verifyMAC(encryptedMessage, encryptedAesKey, receivedMac, "key");
+            verifyMAC(encryptedMessage, encryptedAESKey, receivedMac, "key");
 
             // Decrypt the AES key with the receiver's private RSA key
-            SecretKey decryptKey = decryptAESKey(encryptedAesKey, receiverPrivateKey);
+            SecretKey decryptKey = decryptAESKey(encryptedAESKey, receiverPrivateKey);
 
             // Decrypt the message with the decrypted AES key and IV, then print the message
             decryptMessage(encryptedMessage, decryptKey, iv);
@@ -31,13 +39,13 @@ public class Receiver {
     // Loads a private key from a file path (https://docs.oracle.com/javase/8/docs/api/java/security/spec/PKCS8EncodedKeySpec.html)
     public static PrivateKey loadPrivateKey(String filename) throws Exception {
         // Read the key bytes from the file and create a private key spec
-        byte[] keyBytes = Files.readAllBytes(new File(filename).toPath());
+        byte[] encodedKey = Files.readAllBytes(new File(filename).toPath());
 
         // Uses PKCS8EncodedKeySpec because private key format is different from public key
-        PKCS8EncodedKeySpec spec = new PKCS8EncodedKeySpec(keyBytes);
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedKey);
 
-        // Generate the private key from the spec and return it
-        return KeyFactory.getInstance("RSA").generatePrivate(spec);
+        // Generate the private key from the keySpec and return it
+        return KeyFactory.getInstance("RSA").generatePrivate(keySpec);
     }
 
     // Generate a MAC with the info in the data and compare it with the received MAC (https://docs.oracle.com/javase/8/docs/api/javax/crypto/Mac.html)
