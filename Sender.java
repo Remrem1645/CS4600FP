@@ -20,7 +20,7 @@ public class Sender {
         // Encrypt the AES key with the receiver's public RSA key
         byte[] encryptedAESKey = encryptAESKey(senderSecretKey, receiverPublicKey);
 
-        // Generate a MAC for the encrypted message and AES key, the MAC key is "key"
+        // Generate a MAC for the encrypted message and AES key, the MAC key is senderSecretKey
         byte[] mac = generateMAC(encryptedData.message, encryptedAESKey, senderSecretKey.getEncoded());
 
         // Write the encrypted message, IV, encrypted AES key, and MAC to a file
