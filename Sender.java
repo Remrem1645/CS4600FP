@@ -21,7 +21,7 @@ public class Sender {
         byte[] encryptedAESKey = encryptAESKey(senderSecretKey, receiverPublicKey);
 
         // Generate a MAC for the encrypted message and AES key, the MAC key is "key"
-        byte[] mac = generateMAC(encryptedData.message, encryptedAESKey, "key");
+        byte[] mac = generateMAC(encryptedData.message, encryptedAESKey, senderSecretKey.getEncoded());
 
         // Write the encrypted message, IV, encrypted AES key, and MAC to a file
         try (DataOutputStream out = new DataOutputStream(new FileOutputStream("Transmitted_Data.dat"))) {
@@ -88,9 +88,9 @@ public class Sender {
     }
 
     // Generate MAC(https://docs.oracle.com/javase/8/docs/api/javax/crypto/Mac.html)
-    public static byte[] generateMAC(byte[] message, byte[] encryptAESKey, String MACkey) throws Exception {
+    public static byte[] generateMAC(byte[] message, byte[] encryptAESKey, byte[] MACkey) throws Exception {
         // Generate a MAC key using HMAC-SHA256
-        SecretKey key = new SecretKeySpec(MACkey.getBytes(), "HmacSHA256");
+        SecretKey key = new SecretKeySpec(MACkey, "HmacSHA256");
         // Create a MAC instance and initialize it with the key
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(key);

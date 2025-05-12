@@ -25,11 +25,11 @@ public class Receiver {
             int macLen = in.readInt(); 
             byte[] receivedMac = in.readNBytes(macLen);
 
-            // Verify the MAC
-            verifyMAC(encryptedMessage, encryptedAESKey, receivedMac, "key");
-
             // Decrypt the AES key with the receiver's private RSA key
             SecretKey decryptKey = decryptAESKey(encryptedAESKey, receiverPrivateKey);
+
+            // Verify the MAC
+            verifyMAC(encryptedMessage, encryptedAESKey, receivedMac, decryptKey.getEncoded());
 
             // Decrypt the message with the decrypted AES key and IV, then print the message
             decryptMessage(encryptedMessage, decryptKey, iv);
@@ -49,8 +49,8 @@ public class Receiver {
     }
 
     // Generate a MAC with the info in the data and compare it with the received MAC (https://docs.oracle.com/javase/8/docs/api/javax/crypto/Mac.html)
-    private static void verifyMAC(byte[] message, byte[] encryptAESKey, byte[] receivedMac, String key) throws Exception {
-        SecretKey macKey = new SecretKeySpec(key.getBytes(), "HmacSHA256");
+    private static void verifyMAC(byte[] message, byte[] encryptAESKey, byte[] receivedMac, byte[] MACkey) throws Exception {
+        SecretKey macKey = new SecretKeySpec(MACkey, "HmacSHA256");
         Mac mac = Mac.getInstance("HmacSHA256");
         mac.init(macKey);
         mac.update(message);
