@@ -14,7 +14,7 @@ public class Sender {
         // Generate a AES key for the sender
         SecretKey senderSecretKey = generateAESKey();
 
-        // Encrypt the AES key with the senders AES key
+        // Encrypt the message with the senders AES key
         EncryptedData encryptedData = encryptMessage("message.txt", senderSecretKey);
         
         // Encrypt the AES key with the receiver's public RSA key
